@@ -1,0 +1,18 @@
+{% extends 'dashboard/base_admin.html' %}
+{% block title %}{% if edit %}Edit Tag{% else %}New Tag{% endif %}{% endblock %}
+{% block page_title %}{% if edit %}Edit Tag{% else %}New Tag{% endif %}{% endblock %}
+{% block content %}
+
+<div class="admin-card" style="max-width: 500px;">
+  <form method="POST" class="admin-form">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label">Tag Name</label>
+      {{ form.name }}
+    </div>
+    <button type="submit" class="btn btn-save">{% if edit %}Update{% else %}Create{% endif %} Tag</button>
+    <a href="{% url 'dashboard_tags' %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+  </form>
+</div>
+
+{% endblock %}

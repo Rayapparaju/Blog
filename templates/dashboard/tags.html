@@ -1,0 +1,35 @@
+{% extends 'dashboard/base_admin.html' %}
+{% block title %}Tags{% endblock %}
+{% block page_title %}Tags{% endblock %}
+{% block content %}
+
+<div class="admin-table-wrapper">
+  <div class="table-header">
+    <h5><i class="bi bi-tags me-2"></i>All Tags</h5>
+    <a href="{% url 'dashboard_tag_create' %}" class="btn btn-gradient btn-sm"><i class="bi bi-plus-lg"></i> New Tag</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table admin-table">
+      <thead>
+        <tr><th>Name</th><th>Slug</th><th>Posts</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for tag in tags %}
+        <tr>
+          <td class="fw-medium">{{ tag.name }}</td>
+          <td class="text-muted">{{ tag.slug }}</td>
+          <td>{{ tag.posts.count }}</td>
+          <td>
+            <a href="{% url 'dashboard_tag_edit' tag.pk %}" class="btn btn-action btn-edit-custom"><i class="bi bi-pencil"></i></a>
+            <a href="{% url 'dashboard_tag_delete' tag.pk %}" class="btn btn-action btn-danger-custom" onclick="return confirm('Delete this tag?')"><i class="bi bi-trash"></i></a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="text-center text-muted py-4">No tags.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

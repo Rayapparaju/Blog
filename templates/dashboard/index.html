@@ -1,0 +1,97 @@
+{% extends 'dashboard/base_admin.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+
+<div class="row g-4 mb-4">
+  <div class="col-lg-4 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon purple"><i class="bi bi-journal-text"></i></div>
+      <div class="stat-info">
+        <h4>{{ total_posts }}</h4>
+        <p>Total Posts</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon green"><i class="bi bi-check-circle"></i></div>
+      <div class="stat-info">
+        <h4>{{ published_posts }}</h4>
+        <p>Published</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon orange"><i class="bi bi-pencil"></i></div>
+      <div class="stat-info">
+        <h4>{{ draft_posts }}</h4>
+        <p>Drafts</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon blue"><i class="bi bi-folder2"></i></div>
+      <div class="stat-info">
+        <h4>{{ total_categories }}</h4>
+        <p>Categories</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon pink"><i class="bi bi-people"></i></div>
+      <div class="stat-info">
+        <h4>{{ total_users }}</h4>
+        <p>Users</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-6">
+    <div class="stat-card">
+      <div class="stat-icon red"><i class="bi bi-chat-dots"></i></div>
+      <div class="stat-info">
+        <h4>{{ total_comments }}</h4>
+        <p>Comments</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="admin-card">
+  <h5 class="card-title">Recent Posts</h5>
+  <div class="table-responsive">
+    <table class="table admin-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for post in recent_posts %}
+        <tr>
+          <td><a href="{% url 'dashboard_post_edit' post.pk %}" class="text-decoration-none fw-medium">{{ post.title|truncatechars:40 }}</a></td>
+          <td>{{ post.author.username }}</td>
+          <td>
+            {% if post.status == 'published' %}
+            <span class="badge-status badge-published">Published</span>
+            {% else %}
+            <span class="badge-status badge-draft">Draft</span>
+            {% endif %}
+          </td>
+          <td class="text-muted small">{{ post.created_at|date:"M d, Y" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="text-center text-muted">No posts yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

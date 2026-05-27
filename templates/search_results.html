@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Search: {{ query }}{% endblock %}
+{% block content %}
+
+<section style="padding-top: 120px; padding-bottom: 60px; background: linear-gradient(135deg, #0c0c1d, #1a1a3e);">
+  <div class="container text-center text-white">
+    <h1 class="fw-bold">Search Results</h1>
+    <p class="text-white-50">
+      {% if query %}
+      Showing results for "{{ query }}"
+      {% else %}
+      Enter a search term to find posts
+      {% endif %}
+    </p>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="d-flex gap-3 mb-4">
+          <form class="search-box flex-grow-1" action="{% url 'search' %}" method="GET">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" name="q" placeholder="Search posts..." value="{{ query }}" style="width: 100%;">
+          </form>
+        </div>
+
+        {% if posts %}
+        <div class="row g-4">
+          {% for post in posts %}
+          <div class="col-md-6">
+            <div class="blog-card">
+              <div class="card-img-wrapper">
+                {% if post.thumbnail %}
+                <img src="{{ post.thumbnail.url }}" alt="{{ post.title }}">
+                {% else %}
+                <div class="card-img-placeholder"><i class="bi bi-image"></i></div>
+                {% endif %}
+              </div>
+              <div class="card-body">
+                {% if post.category %}
+                <a href="{% url 'blog_list' %}?category={{ post.category.slug }}" class="category-badge">{{ post.category.name }}</a>
+                {% endif %}
+                <h5 class="card-title"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h5>
+                <p class="card-text">{{ post.excerpt|truncatewords:20 }}</p>
+                <div class="post-date">{{ post.created_at|date:"M d, Y" }}</div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% elif query %}
+        <div class="empty-state">
+          <div class="empty-icon"><i class="bi bi-search"></i></div>
+          <h4>No results found</h4>
+          <p>Try different keywords or browse our categories.</p>
+          <a href="{% url 'blog_list' %}" class="btn btn-gradient">Browse All Posts</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

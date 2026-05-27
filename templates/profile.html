@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+
+<section class="profile-header">
+  <div class="container">
+    <div class="profile-avatar">{{ user.username|first|upper }}</div>
+    <h3 class="fw-bold">{{ user.get_full_name|default:user.username }}</h3>
+    <p class="mb-0 text-white-50">{{ user.email }}</p>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="admin-card">
+          <h5 class="fw-bold mb-4"><i class="bi bi-pencil-square me-2"></i>Edit Profile</h5>
+          <form method="POST" class="admin-form">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-3">
+              <label class="form-label">{{ field.label }}</label>
+              {{ field }}
+              {% if field.errors %}
+              <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+              {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-gradient">Update Profile</button>
+          </form>
+        </div>
+
+        <div class="admin-card mt-4">
+          <h5 class="fw-bold mb-4"><i class="bi bi-chat-dots me-2"></i>My Comments</h5>
+          {% for comment in user.comments.all|slice:":10" %}
+          <div class="comment-item">
+            <div class="comment-content">{{ comment.content|truncatewords:30 }}</div>
+            <div class="comment-date">on <a href="{{ comment.post.get_absolute_url }}" class="text-decoration-none fw-medium">{{ comment.post.title }}</a></div>
+          </div>
+          {% empty %}
+          <p class="text-muted">You haven't made any comments yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

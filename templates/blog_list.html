@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}Blog - All Posts{% endblock %}
+{% block content %}
+
+<section style="padding-top: 120px; padding-bottom: 60px; background: linear-gradient(135deg, #0c0c1d, #1a1a3e);">
+  <div class="container text-center text-white">
+    <h1 class="fw-bold">Our Blog</h1>
+    <p class="text-white-50">Discover articles, tutorials, and stories</p>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="admin-card">
+          <h6 class="fw-bold mb-3">Categories</h6>
+          <ul class="list-unstyled">
+            <li class="mb-2">
+              <a href="{% url 'blog_list' %}" class="text-decoration-none {% if not current_category %}fw-bold text-primary{% else %}text-dark{% endif %}">
+                All Categories
+              </a>
+            </li>
+            {% for cat in categories %}
+            <li class="mb-2">
+              <a href="{% url 'blog_list' %}?category={{ cat.slug }}" class="text-decoration-none {% if current_category == cat.slug %}fw-bold text-primary{% else %}text-dark{% endif %}">
+                {{ cat.name }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-9">
+        {% if posts %}
+        <div class="row g-4">
+          {% for post in posts %}
+          <div class="col-md-6">
+            <div class="blog-card">
+              <div class="card-img-wrapper">
+                {% if post.thumbnail %}
+                <img src="{{ post.thumbnail.url }}" alt="{{ post.title }}">
+                {% else %}
+                <div class="card-img-placeholder"><i class="bi bi-image"></i></div>
+                {% endif %}
+              </div>
+              <div class="card-body">
+                {% if post.category %}
+                <a href="{% url 'blog_list' %}?category={{ post.category.slug }}" class="category-badge">{{ post.category.name }}</a>
+                {% endif %}
+                <h5 class="card-title"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h5>
+                <p class="card-text">{{ post.excerpt|truncatewords:20 }}</p>
+              </div>
+              <div class="card-footer">
+                <div class="author-info">
+                  <div class="author-avatar">{{ post.author.username|first|upper }}</div>
+                  <div>
+                    <div class="author-name">{{ post.author.get_full_name|default:post.author.username }}</div>
+                    <div class="post-date">{{ post.created_at|date:"M d, Y" }}</div>
+                  </div>
+                </div>
+                <a href="{{ post.get_absolute_url }}" class="btn btn-gradient btn-sm">Read</a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <div class="empty-icon"><i class="bi bi-journal-text"></i></div>
+          <h4>No Posts Yet</h4>
+          <p>Check back soon for new content!</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

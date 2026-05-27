@@ -1,0 +1,51 @@
+{% extends 'dashboard/base_admin.html' %}
+{% block title %}Comments{% endblock %}
+{% block page_title %}Comments{% endblock %}
+{% block content %}
+
+<div class="admin-table-wrapper">
+  <div class="table-header">
+    <h5><i class="bi bi-chat-dots me-2"></i>All Comments</h5>
+  </div>
+  <div class="table-responsive">
+    <table class="table admin-table">
+      <thead>
+        <tr>
+          <th>Comment</th>
+          <th>Post</th>
+          <th>User</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for comment in comments %}
+        <tr>
+          <td>{{ comment.content|truncatechars:50 }}</td>
+          <td><a href="{{ comment.post.get_absolute_url }}" class="text-decoration-none">{{ comment.post.title|truncatechars:30 }}</a></td>
+          <td>{{ comment.user.username }}</td>
+          <td>
+            {% if comment.approved %}
+            <span class="badge-status badge-approved">Approved</span>
+            {% else %}
+            <span class="badge-status badge-pending">Pending</span>
+            {% endif %}
+          </td>
+          <td class="text-muted small">{{ comment.created_at|date:"M d, Y" }}</td>
+          <td>
+            {% if not comment.approved %}
+            <a href="{% url 'dashboard_comment_approve' comment.pk %}" class="btn btn-action btn-approve"><i class="bi bi-check-lg"></i></a>
+            {% endif %}
+            <a href="{% url 'dashboard_comment_delete' comment.pk %}" class="btn btn-action btn-danger-custom" onclick="return confirm('Delete this comment?')"><i class="bi bi-trash"></i></a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-center text-muted py-4">No comments.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

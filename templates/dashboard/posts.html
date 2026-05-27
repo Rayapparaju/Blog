@@ -1,0 +1,52 @@
+{% extends 'dashboard/base_admin.html' %}
+{% block title %}Posts{% endblock %}
+{% block page_title %}Posts{% endblock %}
+{% block content %}
+
+<div class="admin-table-wrapper">
+  <div class="table-header">
+    <h5><i class="bi bi-journal-text me-2"></i>All Posts</h5>
+    <a href="{% url 'dashboard_post_create' %}" class="btn btn-gradient btn-sm"><i class="bi bi-plus-lg"></i> New Post</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table admin-table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Category</th>
+          <th>Status</th>
+          <th>Featured</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for post in posts %}
+        <tr>
+          <td class="fw-medium">{{ post.title|truncatechars:45 }}</td>
+          <td>{{ post.author.username }}</td>
+          <td>{{ post.category.name|default:"—" }}</td>
+          <td>
+            {% if post.status == 'published' %}
+            <span class="badge-status badge-published">Published</span>
+            {% else %}
+            <span class="badge-status badge-draft">Draft</span>
+            {% endif %}
+          </td>
+          <td>{% if post.featured %}<i class="bi bi-star-fill text-warning"></i>{% else %}—{% endif %}</td>
+          <td class="text-muted small">{{ post.created_at|date:"M d, Y" }}</td>
+          <td>
+            <a href="{% url 'dashboard_post_edit' post.pk %}" class="btn btn-action btn-edit-custom"><i class="bi bi-pencil"></i></a>
+            <a href="{% url 'dashboard_post_delete' post.pk %}" class="btn btn-action btn-danger-custom" onclick="return confirm('Delete this post?')"><i class="bi bi-trash"></i></a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="text-center text-muted py-4">No posts found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
